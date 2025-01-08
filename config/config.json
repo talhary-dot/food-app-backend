@@ -1,0 +1,29 @@
+{
+  "development": {
+    "username": "neondb_owner",
+    "password": "1H0ODQbFKwkZ",
+    "database": "neondb",
+    "host": "ep-white-fog-a5prb4z9.us-east-2.aws.neon.tech",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "foodapp",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": null,
+    "database": "foodapp",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

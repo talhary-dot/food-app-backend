@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waltrio Solutions - Web Services Provider</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="shortcut icon" type="image/svg" href="./logo.svg" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <header class="bg-white shadow-sm fixed w-full z-10">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-xl font-bold text-gray-800">Waltrio Solutions</div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#" class="text-gray-600 hover:text-blue-500 transition duration-300">Home</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-500 transition duration-300">Services</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-500 transition duration-300">About</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-500 transition duration-300">Contact</a>
+                </div>
+                <button id="mobileMenuButton" class="md:hidden focus:outline-none">
+                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobileMenu" class="md:hidden hidden mt-4 bg-white rounded-lg shadow-lg absolute left-6 right-6">
+                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white transition duration-300">Home</a>
+                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white transition duration-300">Services</a>
+                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white transition duration-300">About</a>
+                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-blue-500 hover:text-white transition duration-300">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="pt-20">
+        <section class="bg-blue-600 text-white">
+            <div class="container mx-auto px-6 py-24 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 animate-fade-in-down">Empower Your Digital Presence</h1>
+                <p class="text-xl mb-8 animate-fade-in-up">Cutting-edge web solutions for businesses of all sizes</p>
+                <a href="#" class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-blue-50 transition duration-300 transform hover:scale-105 inline-block animate-bounce">Get Started</a>
+            </div>
+        </section>
+
+        <section class="py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-12">Our Services</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="bg-white p-6 rounded-lg shadow-md transform hover:scale-105 transition duration-300">
+                        <svg class="w-12 h-12 text-blue-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        <h3 class="text-xl font-semibold mb-2">Web Design</h3>
+                        <p class="text-gray-600">Create stunning, responsive websites that captivate your audience.</p>
+                        <ul class="mt-4 text-sm text-gray-500">
+                            <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Responsive layouts</li>
+                            <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>User-centric design</li>
+                            <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Brand consistency</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md transform hover:scale-105 transition duration-300">
+                        <svg class="w-12 h-12 text-blue-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                        <h3 class="text-xl font-semibold mb-2">Web Development</h3>
+                        <p class="text-gray-600">Build robust, scalable web applications tailored to your needs.</p>
+                        <ul class="mt-4 text-sm text-gray-500">
+                            <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Custom CMS solutions</li>
+                            <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>E-commerce integration</li>
+                            <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>API development</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md transform hover:scale-105 transition duration-300">
+                        <svg class="w-12 h-12 text-blue-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                        <h3 class="text-xl font-semibold mb-2">SEO Optimization</h3>
+                        <p class="text-gray-600">Boost your online visibility and drive organic traffic to your site.</p>
+                        <ul class="mt-4 text-sm text-gray-500">
+                            <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Keyword research</li>
+                            <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>On-page optimization</li>
+                            <li class="flex items-center"><svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Link building strategies</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-gray-100 py-20">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-8 md:mb-0">
+                        <h2 class="text-3xl font-bold mb-4">Why Choose Us?</h2>
+                        <p class="text-gray-600 mb-6">We combine creativity, technical expertise, and industry best practices to deliver exceptional web solutions that drive results.</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center">
+                                <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Experienced team of professionals
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Cutting-edge technologies
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Tailored solutions for your business
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/2">
+                        <img src="./placeholder-600x400.svg" alt="Team working" class="rounded-lg shadow-md transform hover:scale-105 transition duration-300">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-blue-600 text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+                <p class="text-xl mb-8">Let's create something amazing together</p>
+                <a href="#" class="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-blue-50 transition duration-300 transform hover:scale-105 inline-block">Contact Us</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Waltrio Solutions</h3>
+                    <p class="text-gray-400">Empowering businesses with innovative web solutions.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition duration-300">Web Design</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Web Development</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">SEO Optimization</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">E-commerce Solutions</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition duration-300">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Our Team</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Careers</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Connect</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition duration-300">Twitter</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">LinkedIn</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Facebook</a></li>
+                        <li><a href="#" class="hover:text-white transition duration-300">Instagram</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 Waltrio Solutions. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Animate elements on scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.animate-on-scroll');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (elementTop < windowHeight * 0.75) {
+                    element.classList.add('animate-fade-in-up');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', animateOnScroll);
+        animateOnScroll(); // Initial check on page load
+    </script>
+</body>
+</html>
+
