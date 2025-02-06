@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const { Op } = require('sequelize');
+require('dotenv').config()
 
 // Signup
 exports.signup = async (req, res) => {
@@ -71,7 +72,89 @@ exports.signup = async (req, res) => {
     res.status(500).json({ error: 'An error occurred during signup.' });
   }
 };
+exports.updateRestaurantProfile = async (req, res) => {
+  try {
+    const restaurantId = req.params.id; // Get restaurant ID from URL parameter
+    const {
+      restaurant_name,
+      owner_name,
+      email,
+      phone_number,
+      password,
+      restaurant_address,
+      operating_hours,
+      restaurant_type,
+      menu_upload,
+      profile_picture,
+      payment_details,
+    } = req.body;
 
+    // Find the restaurant
+    const restaurant = await RestaurantModel.findByPk(restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        message: "Restaurant not found",
+      });
+    }
+
+    // If email is being changed, check if new email already exists
+    if (email && email !== restaurant.email) {
+      const existingRestaurant = await RestaurantModel.findOne({
+        where: { email },
+      });
+      if (existingRestaurant) {
+        return res.status(400).json({
+          success: false,
+          message: "Email is already registered",
+        });
+      }
+    }
+
+    // Prepare update object
+    const updateData = {};
+
+    // Only include fields that are provided in the request
+    if (restaurant_name) updateData.restaurant_name = restaurant_name;
+    if (owner_name) updateData.owner_name = owner_name;
+    if (email) updateData.email = email;
+    if (phone_number) updateData.phone_number = phone_number;
+    if (restaurant_address) updateData.restaurant_address = restaurant_address;
+    if (operating_hours) updateData.operating_hours = operating_hours;
+    if (restaurant_type) updateData.restaurant_type = restaurant_type;
+    if (menu_upload) updateData.menu_upload = menu_upload;
+    if (profile_picture) updateData.profile_picture = profile_picture;
+    if (payment_details) updateData.payment_details = payment_details;
+
+    // Handle password update separately
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
+    }
+
+    // Update the restaurant
+    await restaurant.update(updateData);
+
+    // Fetch updated restaurant data
+    const updatedRestaurant = await RestaurantModel.findByPk(restaurantId, {
+      attributes: { exclude: ["password"] }, // Exclude password from response
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Restaurant profile updated successfully",
+      data: updatedRestaurant,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Error updating restaurant profile",
+      error: error.message,
+    });
+  }
+};
 // Verify OTP
 exports.verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
@@ -129,7 +212,7 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: 'Invalid email/phone or password.' });
     }
 
-    const token = jwt.sign({ id: restaurant.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE_TIME });
+    const token = jwt.sign({ id: restaurant.id,role:'restaurant' }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE_TIME });
 
     res.status(200).json({ message: 'Login successful', token });
   } catch (err) {

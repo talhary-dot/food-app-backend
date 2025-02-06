@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/db');
 const nodemailer = require('nodemailer');
 const { Op } = require('sequelize');
-
+require('dotenv').config()
 
 
 exports.signup = async (req, res) => {

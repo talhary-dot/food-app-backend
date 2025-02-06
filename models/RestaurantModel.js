@@ -1,13 +1,13 @@
-const { Model, DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
+const { Model, DataTypes } = require("sequelize");
+const bcrypt = require("bcrypt");
 
 module.exports = (sequelize) => {
   class RestaurantModel extends Model {
     static associate(models) {
       // A restaurant can have many favorite relationships
       RestaurantModel.hasMany(models.FavoriteRestaurantModel, {
-        foreignKey: 'restaurant_id',
-        as: 'favorites',
+        foreignKey: "restaurant_id",
+        as: "favorites",
       });
     }
   }
@@ -44,6 +44,7 @@ module.exports = (sequelize) => {
       },
       operating_hours: {
         type: DataTypes.STRING,
+        allowNull: true, // Changed to optional
       },
       restaurant_type: {
         type: DataTypes.STRING,
@@ -53,9 +54,11 @@ module.exports = (sequelize) => {
       },
       profile_picture: {
         type: DataTypes.TEXT,
+        allowNull: true, // Changed to optional
       },
       payment_details: {
         type: DataTypes.STRING,
+        allowNull: true, // Changed to optional
       },
       is_verified: {
         type: DataTypes.BOOLEAN,
@@ -72,8 +75,8 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      modelName: 'RestaurantModel',
-      tableName: 'restaurants',
+      modelName: "RestaurantModel",
+      tableName: "restaurants",
       hooks: {
         beforeCreate: async (restaurant) => {
           if (restaurant.password) {
@@ -82,7 +85,7 @@ module.exports = (sequelize) => {
           }
         },
         beforeUpdate: async (restaurant) => {
-          if (restaurant.changed('password')) {
+          if (restaurant.changed("password")) {
             const salt = await bcrypt.genSalt(10);
             restaurant.password = await bcrypt.hash(restaurant.password, salt);
           }

@@ -6,6 +6,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "genMigrate": "npx sequelize-cli migration:generate",
     "migrate": "npx sequelize-cli db:migrate"
   },
   "keywords": [],
@@ -24,7 +25,8 @@
     "pg": "^8.13.1",
     "prisma": "^6.1.0",
     "sequelize": "^6.37.5",
-    "sequelize-cli": "^6.6.2"
+    "sequelize-cli": "^6.6.2",
+    "stripe": "^17.6.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

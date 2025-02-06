@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { UserModel, RestaurantModel } = require('../models');
-
+require('dotenv').config()
 const authenticate = (roles = []) => {
     return async (req, res, next) => {
         try {

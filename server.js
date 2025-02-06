@@ -6,25 +6,28 @@ const orderRoutes = require('./routes/orderRoutes');
 const restaurantRoutes = require('./routes/restaurantRoutes');
 const menuRoutes = require('./routes/menuRoutes');
 const favouriteRoutes = require('./routes/favouriteRoutes');
+const dishesRoutes = require('./routes/dishesRoute')
 const sequelize = require('./config/db')
 const path = require('path')
 dotenv.config();
 const app = express();
 
 app.use(express.json());
+
 // app.use('/front', express.static('./frontend'));
 // Routes
-app.get('/',(req,res)=>{
-       res.sendFile(path.join(__dirname,"frontend",'index.html'))
-})
+
+app.get('/',(req,res)=>{res.sendFile(path.join(__dirname,"frontend",'index.html'))})
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/customer', customerRoutes);
 app.use('/api/v1/order', orderRoutes);
 app.use('/api/v1/restaurant', restaurantRoutes);
 app.use('/api/v1/menu', menuRoutes);
 app.use('/api/v1/favourite', favouriteRoutes);
+app.use('/api/v1/dishes',dishesRoutes)
 
 const PORT = process.env.PORT || 5000;
+
 const start = async () => {
     try {
         console.log('Checking Db Connection...')
