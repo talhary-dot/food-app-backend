@@ -1,15 +1,7 @@
 const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  class DishModel extends Model {
-    static associate(models) {
-     
-      DishModel.belongsTo(models.RestaurantModel, {
-        foreignKey: "restaurant_id",
-        as: "restaurant",
-      });
-    }
-  }
+  class DishModel extends Model {}
 
   DishModel.init(
     {
@@ -18,7 +10,7 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
       images: {
-        type: DataTypes.TEXT, // For storing imagse URLs
+        type: DataTypes.TEXT, // For storing image URLs
         allowNull: true,
       },
       price: {
@@ -31,13 +23,8 @@ module.exports = (sequelize) => {
         defaultValue: 0,
       },
       restaurant_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER, // Keep the field but remove the relation
         allowNull: false,
-        references: {
-          model: "restaurants",
-          key: "id",
-        },
-        onDelete: "CASCADE",
       },
     },
     {

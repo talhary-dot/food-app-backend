@@ -5,7 +5,6 @@ const dishController = {
   createDish: async (req, res) => {
     try {
       const { restaurant_id, dish_name, images, price, discount } = req.body;
-
       const newDish = await DishModel.create({
         restaurant_id,
         dish_name,
@@ -22,7 +21,7 @@ const dishController = {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: "Error creating dish",
+        message: "Error creating dishe",
         error: error.message,
       });
     }
@@ -123,7 +122,7 @@ const dishController = {
   // Get all dishes for a restaurant
   getAllDishes: async (req, res) => {
     try {
-      const { restaurant_id } = req.query; // You can also get this from req.params
+      const { restaurant_id } = req.query; 
 
       const dishes = await DishModel.findAll({
         where: { restaurant_id },

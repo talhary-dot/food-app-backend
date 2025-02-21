@@ -9,6 +9,11 @@ module.exports = (sequelize) => {
         foreignKey: "restaurant_id",
         as: "favorites",
       });
+
+      RestaurantModel.hasMany(models.DishModel, {
+        foreignKey: "restaurant_id",
+        as: "dishes",
+      });
     }
   }
 
