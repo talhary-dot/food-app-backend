@@ -8,7 +8,8 @@ const menuRoutes = require('./routes/menuRoutes');
 const favouriteRoutes = require('./routes/favouriteRoutes');
 const dishesRoutes = require('./routes/dishesRoute')
 const sequelize = require('./config/db')
-const path = require('path')
+const path = require('path');
+const { verifyOrder } = require('./middleware/verify-order');
 dotenv.config();
 const app = express();
 
@@ -16,7 +17,7 @@ app.use(express.json());
 
 // app.use('/front', express.static('./frontend'));
 // Routes
-
+app.get('/verify-order',verifyOrder)
 app.get('/',(req,res)=>{res.sendFile(path.join(__dirname,"frontend",'index.html'))})
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/customer', customerRoutes);

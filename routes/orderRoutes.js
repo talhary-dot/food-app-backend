@@ -1,7 +1,8 @@
 const express = require('express');
 
-const orderController = require('../controllers/orderController');
-const authenticate = require('../middleware/authMiddleware');
+const orderController = require('../controllers/orderController.js');
+const authenticate = require('../middleware/authMiddleware.js');
+
 
 const router = express.Router();
 
@@ -13,5 +14,7 @@ router.get('/get', authenticate(['user']), orderController.getCustomerOrders);
 
 // Get order details
 router.get('/:id', authenticate(['user', 'restaurant']), orderController.getOrderDetails);
+
+
 
 module.exports = router;

@@ -4,6 +4,7 @@ const stripe = require("../config/stripe");
 exports.placeOrder = async (req, res) => {
   const { restaurant_id, items } = req.body; // items: [{ menu_item_id, quantity }]
   const customer_id = req.authenticated.id; // From the authentication middleware
+
   try {
     // Calculate the total price
     let total_price = 0;
@@ -23,12 +24,31 @@ exports.placeOrder = async (req, res) => {
         price,
       });
     }
+
+    // Save the order to the database
+    const order = await OrderModel.create({
+      customer_id,
+      restaurant_id,
+      total_price,
+      status: 'pending', // You can use 'pending' to indicate payment is not yet completed
+    });
+
+    // Save the order items
+    for (const item of orderItems) {
+      await OrderItemModel.create({
+        order_id: order.id,
+        menu_item_id: item.menu_item_id,
+        quantity: item.quantity,
+        price: item.price,
+      });
+    }
+
     // Create the Stripe Checkout session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      payment_method_types: ['card'],
       line_items: orderItems.map((item) => ({
         price_data: {
-          currency: "usd",
+          currency: 'usd',
           product_data: {
             name: `Menu Item ${item.menu_item_id}`, // Adjust this as needed
           },
@@ -36,18 +56,27 @@ exports.placeOrder = async (req, res) => {
         },
         quantity: item.quantity,
       })),
-      mode: "payment",
-      success_url:process.env.STRIPE_SUCCESS_URL, // Replace with your actual success URL
-      cancel_url: process.env.STRIPE_CANCEL_URL, // Replace with your actual cancel URL
+      mode: 'payment',
+      success_url: `${process.env.STRIPE_SUCCESS_URL}`, // Pass the order ID to the success URL
+      cancel_url: process.env.STRIPE_CANCEL_URL,
+      metadata: {
+        order_id: order.id, // Include the order ID in metadata
+      },
     });
-    res.status(200).json({ url: session.url });
+    
+
+
+    res.status(200).json({ url: session.url,order });
   } catch (err) {
-    console.error("Error placing order:", err);
+    console.error('Error placing order:', err);
     res
       .status(500)
-      .json({ error: "An error occurred while placing the order." });
+      .json({ error: 'An error occurred while placing the order.' });
   }
 };
+
+
+
 exports.getCustomerOrders = async (req, res) => {
     const customer_id = req.authenticated.id; // From the authentication middleware
   
@@ -108,3 +137,4 @@ exports.getCustomerOrders = async (req, res) => {
     }
   };
   
+ 

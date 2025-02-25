@@ -17,7 +17,7 @@ router.post('/:id',authenticate(['restaurant']),restaurantController.updateResta
 
 router.get('/get', authenticate(['user']), restaurantController.fetchAllRestaurants);
 
-
+router.get('/orders',authenticate(['restaurant']),restaurantController.getAllOrder)
 //Search
 router.get('/search', restaurantController.searchRestaurants);
 

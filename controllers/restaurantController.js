@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const { Op } = require('sequelize');
 require('dotenv').config()
-
+const {OrderModel } = require('../models')
 // Signup
 exports.signup = async (req, res) => {
   const {
@@ -301,5 +301,21 @@ exports.searchRestaurants = async (req, res) => {
   } catch (err) {
     console.error('Error searching restaurants:', err);
     res.status(500).json({ error: 'An error occurred while searching for restaurants.' });
+  }
+};
+
+exports.getAllOrder = async (req, res) => {
+  const restaurant_id = req.authenticated.id; // Assuming this is the restaurant's ID
+
+  try {
+    // Use findAll with a where clause to filter by restaurant_id
+    const orders = await OrderModel.findAll({
+      where: { restaurant_id }, // Filter orders by restaurant_id
+    });
+
+    res.status(200).json(orders); // Return the orders as JSON
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ error: 'An error occurred while getting all orders' });
   }
 };
