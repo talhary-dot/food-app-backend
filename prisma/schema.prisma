@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SequelizeMeta {
+  name String @id @db.VarChar(255)
+}
+
+model favorite_restaurants {
+  id            Int         @id @default(autoincrement())
+  customer_id   Int
+  restaurant_id Int
+  createdAt     DateTime    @db.Timestamptz(6)
+  updatedAt     DateTime    @db.Timestamptz(6)
+  users         users       @relation(fields: [customer_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  restaurants   restaurants @relation(fields: [restaurant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model menu_categories {
+  id            Int          @id @default(autoincrement())
+  category_name String       @db.VarChar(255)
+  restaurant_id Int
+  createdAt     DateTime     @db.Timestamptz(6)
+  updatedAt     DateTime     @db.Timestamptz(6)
+  restaurants   restaurants  @relation(fields: [restaurant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  menu_items    menu_items[]
+}
+
+model menu_items {
+  id              Int             @id @default(autoincrement())
+  item_name       String          @db.VarChar(255)
+  price           Float
+  description     String?
+  category_id     Int
+  createdAt       DateTime        @db.Timestamptz(6)
+  updatedAt       DateTime        @db.Timestamptz(6)
+  menu_categories menu_categories @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  order_items     order_items[]
+}
+
+model order_items {
+  id           Int        @id @default(autoincrement())
+  order_id     Int
+  menu_item_id Int
+  quantity     Int
+  price        Float
+  createdAt    DateTime   @db.Timestamptz(6)
+  updatedAt    DateTime   @db.Timestamptz(6)
+  menu_items   menu_items @relation(fields: [menu_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  orders       orders     @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model orders {
+  id            Int           @id @default(autoincrement())
+  customer_id   Int
+  restaurant_id Int
+  total_price   Float
+  status        String        @default("Pending") @db.VarChar(255)
+  createdAt     DateTime      @db.Timestamptz(6)
+  updatedAt     DateTime      @db.Timestamptz(6)
+  order_items   order_items[]
+  users         users         @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  restaurants   restaurants   @relation(fields: [restaurant_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model otp_verifications {
+  id        Int       @id @default(autoincrement())
+  user_id   Int
+  otp       String    @db.VarChar(255)
+  expire_at DateTime  @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime  @default(now()) @db.Timestamptz(6)
+  deletedAt DateTime? @db.Timestamptz(6)
+  users     users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model res_otp_verifications {
+  id            Int         @id @default(autoincrement())
+  restaurant_id Int
+  otp           String      @db.VarChar(255)
+  expire_at     DateTime    @db.Timestamptz(6)
+  createdAt     DateTime    @db.Timestamptz(6)
+  updatedAt     DateTime    @db.Timestamptz(6)
+  restaurants   restaurants @relation(fields: [restaurant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model restaurants {
+  id                    Int                     @id @default(autoincrement())
+  restaurant_name       String                  @db.VarChar(255)
+  owner_name            String                  @db.VarChar(255)
+  email                 String                  @unique @db.VarChar(255)
+  phone_number          String                  @db.VarChar(255)
+  password              String                  @db.VarChar(255)
+  restaurant_address    String                  @db.VarChar(255)
+  operating_hours       String?                 @db.VarChar(255)
+  restaurant_type       String?                 @db.VarChar(255)
+  menu_upload           String?
+  profile_picture       String?
+  payment_details       String?                 @db.VarChar(255)
+  is_verified           Boolean?                @default(false)
+  createdAt             DateTime                @db.Timestamptz(6)
+  updatedAt             DateTime                @db.Timestamptz(6)
+  reset_token           String?                 @db.VarChar(255)
+  reset_token_expires   DateTime?               @db.Timestamptz(6)
+  favorite_restaurants  favorite_restaurants[]
+  menu_categories       menu_categories[]
+  orders                orders[]
+  res_otp_verifications res_otp_verifications[]
+}
+
+model users {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(255)
+  email                String                 @unique @db.VarChar(255)
+  password             String                 @db.VarChar(255)
+  phone                String?                @db.VarChar(255)
+  address              String?                @db.VarChar(255)
+  profile_pic          String?
+  is_verified          Boolean?               @default(false)
+  is_deleted           Boolean?               @default(false)
+  createdAt            DateTime               @default(now()) @db.Timestamptz(6)
+  updatedAt            DateTime               @default(now()) @db.Timestamptz(6)
+  reset_token          String?                @db.VarChar(255)
+  reset_token_expires  DateTime?              @db.Timestamptz(6)
+  favorite_restaurants favorite_restaurants[]
+  orders               orders[]
+  otp_verifications    otp_verifications[]
+}
