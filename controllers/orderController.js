@@ -1,5 +1,11 @@
-const { OrderModel, OrderItemModel, MenuItemModel, UserModel } = require('../models');
-require('dotenv').config()
+const {
+  OrderModel,
+  OrderItemModel,
+  MenuItemModel,
+  UserModel,
+} = require("../models");
+const { sequelize } = require("../models");
+require("dotenv").config();
 const stripe = require("../config/stripe");
 exports.placeOrder = async (req, res) => {
   const { restaurant_id, items } = req.body; // items: [{ menu_item_id, quantity }]
@@ -30,7 +36,7 @@ exports.placeOrder = async (req, res) => {
       customer_id,
       restaurant_id,
       total_price,
-      status: 'pending', // You can use 'pending' to indicate payment is not yet completed
+      status: "pending", // You can use 'pending' to indicate payment is not yet completed
     });
 
     // Save the order items
@@ -45,10 +51,10 @@ exports.placeOrder = async (req, res) => {
 
     // Create the Stripe Checkout session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: ["card"],
       line_items: orderItems.map((item) => ({
         price_data: {
-          currency: 'usd',
+          currency: "usd",
           product_data: {
             name: `Menu Item ${item.menu_item_id}`, // Adjust this as needed
           },
@@ -56,85 +62,124 @@ exports.placeOrder = async (req, res) => {
         },
         quantity: item.quantity,
       })),
-      mode: 'payment',
+      mode: "payment",
       success_url: `${process.env.STRIPE_SUCCESS_URL}`, // Pass the order ID to the success URL
       cancel_url: process.env.STRIPE_CANCEL_URL,
       metadata: {
         order_id: order.id, // Include the order ID in metadata
       },
     });
-    
 
-
-    res.status(200).json({ url: session.url,order });
+    res.status(200).json({ url: session.url, order });
   } catch (err) {
-    console.error('Error placing order:', err);
+    console.error("Error placing order:", err);
     res
       .status(500)
-      .json({ error: 'An error occurred while placing the order.' });
+      .json({ error: "An error occurred while placing the order." });
   }
 };
 
-
-
 exports.getCustomerOrders = async (req, res) => {
-    const customer_id = req.authenticated.id; // From the authentication middleware
-  
-    try {
-      const orders = await OrderModel.findAll({
-        where: { customer_id },
-        include: [
-          {
-            model: OrderItemModel,
-            as: 'items',
-            include: {
-              model: MenuItemModel,
-              as: 'menu_item',
-              attributes: ['item_name', 'price'],
-            },
-          },
-        ],
-      });
-  
-      res.status(200).json({ orders });
-    } catch (err) {
-      console.error('Error fetching orders:', err);
-      res.status(500).json({ error: 'An error occurred while fetching orders.' });
-    }
-  };
+  const customer_id = req.authenticated.id; // From the authentication middleware
 
-  exports.getOrderDetails = async (req, res) => {
-    const { id } = req.params; // Order ID
-  
-    try {
-      const order = await OrderModel.findByPk(id, {
-        include: [
-          {
-            model: OrderItemModel,
-            as: 'items',
-            include: {
-              model: MenuItemModel,
-              as: 'menu_item',
-              attributes: ['item_name', 'price'],
-            },
+  try {
+    const orders = await OrderModel.findAll({
+      where: { customer_id },
+      include: [
+        {
+          model: OrderItemModel,
+          as: "items",
+          include: {
+            model: MenuItemModel,
+            as: "menu_item",
+            attributes: ["item_name", "price"],
           },
-          {
-            model: UserModel,
-            as: 'customer',
-            attributes: ['name', 'email'],
+        },
+      ],
+    });
+
+    res.status(200).json({ orders });
+  } catch (err) {
+    console.error("Error fetching orders:", err);
+    res.status(500).json({ error: "An error occurred while fetching orders." });
+  }
+};
+
+exports.getOrderDetails = async (req, res) => {
+  const { id } = req.params; // Order ID
+
+  try {
+    const order = await OrderModel.findByPk(id, {
+      include: [
+        {
+          model: OrderItemModel,
+          as: "items",
+          include: {
+            model: MenuItemModel,
+            as: "menu_item",
+            attributes: ["item_name", "price"],
           },
-        ],
-      });
-  
-      if (!order) {
-        return res.status(404).json({ error: 'Order not found' });
-      }
-  
-      res.status(200).json({ order });
-    } catch (err) {
-      console.error('Error fetching order details:', err);
-      res.status(500).json({ error: 'An error occurred while fetching the order.' });
+        },
+        {
+          model: UserModel,
+          as: "customer",
+          attributes: ["name", "email"],
+        },
+      ],
+      attributes: [
+        "id",
+        "customer_id",
+        "restaurant_id",
+        "total_price",
+        "status",
+        "reason",
+        "completedAt",
+        "tipAmount",
+        "createdAt",
+        "updatedAt",
+      ],
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
     }
-  };
-  
- 
+
+    res.status(200).json({ order });
+  } catch (err) {
+    console.error("Error fetching order details:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the order." });
+  }
+};
+
+exports.updateOrderStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status, reason, tipAmount } = req.body;
+
+  try {
+    const order = await OrderModel.findByPk(id);
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    order.status = status;
+    order.reason = reason || null;
+    order.completedAt = new Date();
+    order.tipAmount = tipAmount || null;
+
+    await order.save();
+    res.status(200).json({
+      message: `Order status updated to ${status}`,
+      status: order.status,
+      tipAmount: order.tipAmount,
+      completedAt: order.completedAt,
+      reason: order.reason,
+    });
+  } catch (err) {
+    console.error("Error updating order status:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating order status." });
+  }
+};
