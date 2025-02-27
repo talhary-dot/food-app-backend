@@ -4,10 +4,6 @@ const {
   MenuItemModel,
   UserModel,
 } = require("../models");
-<<<<<<< HEAD
-const { sequelize } = require("../models");
-=======
->>>>>>> 23d4a94b0df2f7d81de3e27753ec0916abc61a29
 require("dotenv").config();
 const stripe = require("../config/stripe");
 exports.placeOrder = async (req, res) => {
