@@ -14,9 +14,14 @@ router.get("/get", authenticate(["user"]), orderController.getCustomerOrders);
 // Get order details
 router.get(
   "/:id",
+  authenticate(["user", "restaurant"]),
   orderController.getOrderDetails
 );
 
-router.put("/:id/status", orderController.updateOrderStatus);
+router.put(
+  "/:id/status",
+  authenticate(["restaurant"]),
+  orderController.updateOrderStatus
+);
 
 module.exports = router;
