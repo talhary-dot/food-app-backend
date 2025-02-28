@@ -54,6 +54,10 @@ module.exports = (sequelize) => {
         type: DataTypes.FLOAT,
         allowNull: true,
       },
+      receivedBy: {
+        type: DataTypes.STRING,
+        allowNull: true, // Optional field
+      },
     },
     {
       sequelize,

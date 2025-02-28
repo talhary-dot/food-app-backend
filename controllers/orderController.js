@@ -6,6 +6,7 @@ const {
 } = require("../models");
 require("dotenv").config();
 const stripe = require("../config/stripe");
+
 exports.placeOrder = async (req, res) => {
   const { restaurant_id, items } = req.body; // items: [{ menu_item_id, quantity }]
   const customer_id = req.authenticated.id; // From the authentication middleware
@@ -134,6 +135,7 @@ exports.getOrderDetails = async (req, res) => {
         "reason",
         "completedAt",
         "tipAmount",
+        "receivedBy",
         "createdAt",
         "updatedAt",
       ],
@@ -154,7 +156,7 @@ exports.getOrderDetails = async (req, res) => {
 
 exports.updateOrderStatus = async (req, res) => {
   const { id } = req.params;
-  const { status, reason, tipAmount } = req.body;
+  const { status, reason, tipAmount, receivedBy } = req.body;
 
   try {
     const order = await OrderModel.findByPk(id);
@@ -166,6 +168,7 @@ exports.updateOrderStatus = async (req, res) => {
     order.reason = reason || null;
     order.completedAt = new Date();
     order.tipAmount = tipAmount || null;
+    order.receivedBy = receivedBy || null; // Update receivedBy field
 
     await order.save();
     res.status(200).json({
@@ -174,6 +177,7 @@ exports.updateOrderStatus = async (req, res) => {
       tipAmount: order.tipAmount,
       completedAt: order.completedAt,
       reason: order.reason,
+      receivedBy: order.receivedBy,
     });
   } catch (err) {
     console.error("Error updating order status:", err);
@@ -182,3 +186,34 @@ exports.updateOrderStatus = async (req, res) => {
       .json({ error: "An error occurred while updating order status." });
   }
 };
+
+// exports.updateOrderStatus = async (req, res) => {
+//   const { id } = req.params;
+//   const { status, reason, tipAmount } = req.body;
+
+//   try {
+//     const order = await OrderModel.findByPk(id);
+//     if (!order) {
+//       return res.status(404).json({ error: "Order not found" });
+//     }
+
+//     order.status = status;
+//     order.reason = reason || null;
+//     order.completedAt = new Date();
+//     order.tipAmount = tipAmount || null;
+
+//     await order.save();
+//     res.status(200).json({
+//       message: `Order status updated to ${status}`,
+//       status: order.status,
+//       tipAmount: order.tipAmount,
+//       completedAt: order.completedAt,
+//       reason: order.reason,
+//     });
+//   } catch (err) {
+//     console.error("Error updating order status:", err);
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while updating order status." });
+//   }
+// };
