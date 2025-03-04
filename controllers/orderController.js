@@ -35,6 +35,7 @@ exports.placeOrder = async (req, res) => {
     const order = await OrderModel.create({
       customer_id,
       restaurant_id,
+      ownerAmount: total_price / 100,
       total_price,
       status: "pending", // You can use 'pending' to indicate payment is not yet completed
     });
