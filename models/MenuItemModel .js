@@ -1,12 +1,13 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes } = require("sequelize");
+const path = require("path");
 
 module.exports = (sequelize) => {
   class MenuItemModel extends Model {
     static associate(models) {
       MenuItemModel.belongsTo(models.MenuCategoryModel, {
-        foreignKey: 'category_id',
-        as: 'category',
-        onDelete: 'CASCADE',
+        foreignKey: "category_id",
+        as: "category",
+        onDelete: "CASCADE",
       });
     }
   }
@@ -29,16 +30,20 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'menu_categories',
-          key: 'id',
+          model: "menu_categories",
+          key: "id",
         },
-        onDelete: 'CASCADE',
+        onDelete: "CASCADE",
+      },
+      image_path: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
     },
     {
       sequelize,
-      modelName: 'MenuItemModel',
-      tableName: 'menu_items',
+      modelName: "MenuItemModel",
+      tableName: "menu_items",
     }
   );
 
