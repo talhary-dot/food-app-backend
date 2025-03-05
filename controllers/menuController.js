@@ -1,22 +1,7 @@
 const { MenuCategoryModel, MenuItemModel } = require("../models");
-const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "menuItemPictures");
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
-    );
-  },
-});
-const upload = multer({ storage: storage });
 
 exports.addMenuCategory = async (req, res) => {
   const { category_name } = req.body;
@@ -107,31 +92,25 @@ exports.addMenuItem = async (req, res) => {
 
 exports.uploadImage = async (req, res) => {
   const { id } = req.params;
-  upload.single("image")(req, res, async (err) => {
-    if (err) {
-      console.error("Error uploading image:", err);
-      return res
-        .status(500)
-        .json({ error: "An error occurred while uploading the image." });
+
+  const menuItemPath = `/uploads/menu-items/${req.file.filename}`;
+  if (!req.file) {
+    return res.status(400).json({ error: "No image file provided." });
+  }
+  try {
+    const item = await MenuItemModel.findByPk(id);
+    if (!item) {
+      return res.status(404).json({ error: "Menu item not found" });
     }
-    if (!req.file) {
-      return res.status(400).json({ error: "No image file provided." });
-    }
-    try {
-      const item = await MenuItemModel.findByPk(id);
-      if (!item) {
-        return res.status(404).json({ error: "Menu item not found" });
-      }
-      item.image_path = req.file.path;
-      await item.save();
-      res.status(200).json({ message: "Image uploaded successfully", item });
-    } catch (err) {
-      console.error("Error updating menu item with image:", err);
-      res.status(500).json({
-        error: "An error occurred while updating the menu item with image.",
-      });
-    }
-  });
+    item.image_path = menuItemPath;
+    await item.save();
+    res.status(200).json({ message: "Image uploaded successfully", item });
+  } catch (err) {
+    console.error("Error updating menu item with image:", err);
+    res.status(500).json({
+      error: "An error occurred while updating the menu item with image.",
+    });
+  }
 };
 
 exports.editMenuItem = async (req, res) => {
