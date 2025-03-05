@@ -4,7 +4,8 @@ const menuController = require("../controllers/menuController");
 const authenticate = require("../middleware/authMiddleware");
 
 const router = express.Router();
-
+const configureMulter = require("../config/multer");
+const upload = configureMulter({ destinationFolder: "./uploads/menu-items" });
 // Add a menu category
 router.post(
   "/category",
@@ -48,6 +49,10 @@ router.get(
   menuController.getMenu
 );
 
-router.post("/menu-items/:id/upload-image", menuController.uploadImage);
+router.post(
+  "/menu-items/:id/upload-image",
+  upload.single("menu_item"),
+  menuController.uploadImage
+);
 
 module.exports = router;

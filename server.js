@@ -19,7 +19,7 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 // Serve static files from the menuItemPictures folder
 app.use("/pictures", express.static(path.join(__dirname)));
-
+app.use("/menuItemPictures", express.static(path.join(__dirname)));
 // Routes
 app.get("/verify-order", verifyOrder);
 app.get("/", (req, res) => {
