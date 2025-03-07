@@ -165,6 +165,7 @@ exports.getMenu = async (req, res) => {
   if (req.authenticated.role === "user" && req.params) {
     restaurant_id = req.params.restaurant_id;
   }
+
   try {
     const categories = await MenuCategoryModel.findAll({
       where: { restaurant_id },
@@ -176,13 +177,11 @@ exports.getMenu = async (req, res) => {
       ],
     });
 
+    // Transform the menu data without adding `image_url`
     const menu = categories.map((category) => ({
       ...category.toJSON(),
       items: category.items.map((item) => ({
-        ...item.toJSON(),
-        image_url: item.image_path
-          ? `${req.protocol}://${req.get("host")}${item.image_path}`
-          : null, // Directly use `item.image_path` to ensure consistency
+        ...item.toJSON(), // Include all item details as is
       })),
     }));
 
