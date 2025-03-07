@@ -91,15 +91,21 @@ exports.addMenuItem = async (req, res) => {
 };
 
 exports.uploadImage = async (req, res) => {
+  console.log("function got called");
   const { id } = req.params;
 
-  const menuItemPath = `/uploads/menu-items/${req.file.filename}`;
   if (!req.file) {
+    console.log("No image file was provided in the request.");
     return res.status(400).json({ error: "No image file provided." });
   }
+  const menuItemPath = `${req.protocol}://${req.get(
+    "host"
+  )}/menuItemPictures/uploads/menu-items/${req.file.filename}`;
+  console.log("Constructed menuItemPath:", menuItemPath);
   try {
     const item = await MenuItemModel.findByPk(id);
     if (!item) {
+      console.log(`Menu item with ID ${id} not found.`);
       return res.status(404).json({ error: "Menu item not found" });
     }
     item.image_path = menuItemPath;
@@ -153,7 +159,6 @@ exports.deleteMenuItem = async (req, res) => {
       .json({ error: "An error occurred while deleting the menu item." });
   }
 };
-
 exports.getMenu = async (req, res) => {
   let restaurant_id = req.authenticated.id;
 
@@ -170,15 +175,14 @@ exports.getMenu = async (req, res) => {
         },
       ],
     });
+
     const menu = categories.map((category) => ({
       ...category.toJSON(),
       items: category.items.map((item) => ({
         ...item.toJSON(),
         image_url: item.image_path
-          ? `${req.protocol}://${req.get(
-              "host"
-            )}/menuItemPictures/${path.basename(item.image_path)}`
-          : null,
+          ? `${req.protocol}://${req.get("host")}${item.image_path}`
+          : null, // Directly use `item.image_path` to ensure consistency
       })),
     }));
 
