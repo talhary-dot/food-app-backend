@@ -54,5 +54,5 @@ router.post(
   upload.single("menu_item"),
   menuController.uploadImage
 );
-
+router.put("/update", menuController.updateDiscountPrice);
 module.exports = router;

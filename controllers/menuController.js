@@ -72,10 +72,19 @@ exports.deleteMenuCategory = async (req, res) => {
 };
 
 exports.addMenuItem = async (req, res) => {
-  const { category_id, item_name, price, description } = req.body;
+  const {
+    category_id,
+    item_name,
+    price,
+    description,
+    remaining_discount_time,
+    discount,
+  } = req.body;
 
   try {
     const item = await MenuItemModel.create({
+      discount,
+      remaining_discount_time,
       category_id,
       item_name,
       price,
@@ -191,5 +200,42 @@ exports.getMenu = async (req, res) => {
     res
       .status(500)
       .json({ error: "An error occurred while fetching the menu." });
+  }
+};
+exports.updateDiscountPrice = async (req, res) => {
+  try {
+    const { menu_item_id, discount, remaining_discount_time } = req.body;
+    if (!menu_item_id || !discount || !remaining_discount_time) {
+      return res
+        .status(400)
+        .json({ error: "Please provide all the required fields" });
+    }
+    const item = await MenuItemModel.findByPk(menu_item_id);
+    if (!item) {
+      return res.status(404).json({ error: "Menu item not found" });
+    }
+
+    const now = new Date();
+    const discountDate = new Date(remaining_discount_time);
+    if (
+      isNaN(discountDate) ||
+      discountDate <= now ||
+      discount < 0 ||
+      discount > 100
+    ) {
+      return res.status(400).json({
+        error:
+          "Please provide a valid future date for remaining_discount_time or invalid discount",
+      });
+    }
+    item.discount = discount;
+    item.remaining_discount_time = remaining_discount_time;
+    await item.save();
+    res.status(200).json({ message: "Discount updated successfully", item });
+  } catch (err) {
+    console.error("Error updating discount:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the discount." });
   }
 };

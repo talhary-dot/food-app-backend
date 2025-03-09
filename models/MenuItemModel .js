@@ -22,6 +22,27 @@ module.exports = (sequelize) => {
         type: DataTypes.FLOAT,
         allowNull: false,
       },
+      discount: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        validate: {
+          min: 0,
+          max: 100,
+        },
+      },
+      remaining_discount_time: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        validate: {
+          isFuture(value) {
+            if (value && new Date(value) <= new Date()) {
+              throw new Error(
+                "remaining_discount_time must be a future date and time."
+              );
+            }
+          },
+        },
+      },
       description: {
         type: DataTypes.TEXT,
         allowNull: true,
