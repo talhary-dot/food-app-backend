@@ -4,7 +4,7 @@ const {
   MenuItemModel,
   UserModel,
 } = require("../models");
-const { calculatePrice } = require("../utils/calculateDiscount");
+const calculatePrice = require("../utils/calculateDiscount");
 require("dotenv").config();
 const stripe = require("../config/stripe");
 
@@ -23,6 +23,7 @@ exports.placeOrder = async (req, res) => {
           .status(404)
           .json({ error: `Menu item not found: ${item.menu_item_id}` });
       }
+      console.log(calculatePrice);
       const price = calculatePrice(
         menuItem.price,
         menuItem.discount,
