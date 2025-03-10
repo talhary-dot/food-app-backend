@@ -9,14 +9,10 @@ const router = express.Router();
 router.post("/place", authenticate(["user"]), orderController.placeOrder);
 
 // Get all orders for a customer
-router.get("/get", authenticate(["user"]), orderController.getCustomerOrders);
+router.get("/get", orderController.getCustomerOrders);
 
 // Get order details
-router.get(
-  "/:id",
-  authenticate(["user", "restaurant"]),
-  orderController.getOrderDetails
-);
+router.get("/:id", orderController.getOrderDetails);
 
 router.put(
   "/:id/status",

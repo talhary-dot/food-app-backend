@@ -4,6 +4,7 @@ const {
   MenuItemModel,
   UserModel,
 } = require("../models");
+const calculatePrice = require("../utils/calculateDiscount");
 require("dotenv").config();
 const stripe = require("../config/stripe");
 
@@ -22,7 +23,14 @@ exports.placeOrder = async (req, res) => {
           .status(404)
           .json({ error: `Menu item not found: ${item.menu_item_id}` });
       }
-      const price = menuItem.price * item.quantity;
+      console.log(calculatePrice);
+      const price = calculatePrice(
+        menuItem.price,
+        menuItem.discount,
+        item.quantity,
+        menuItem.remaining_discount_time
+      );
+
       total_price += price;
       orderItems.push({
         menu_item_id: item.menu_item_id,
@@ -59,7 +67,7 @@ exports.placeOrder = async (req, res) => {
           product_data: {
             name: `Menu Item ${item.menu_item_id}`, // Adjust this as needed
           },
-          unit_amount: item.price * 100, // Stripe expects the amount in cents
+          unit_amount: Math.round(item.price * 100), // Stripe expects the amount in cents
         },
         quantity: item.quantity,
       })),

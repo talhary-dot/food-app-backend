@@ -72,10 +72,19 @@ exports.deleteMenuCategory = async (req, res) => {
 };
 
 exports.addMenuItem = async (req, res) => {
-  const { category_id, item_name, price, description } = req.body;
+  const {
+    category_id,
+    item_name,
+    price,
+    description,
+    remaining_discount_time,
+    discount,
+  } = req.body;
 
   try {
     const item = await MenuItemModel.create({
+      discount,
+      remaining_discount_time,
       category_id,
       item_name,
       price,
@@ -91,15 +100,21 @@ exports.addMenuItem = async (req, res) => {
 };
 
 exports.uploadImage = async (req, res) => {
+  console.log("function got called");
   const { id } = req.params;
 
-  const menuItemPath = `/uploads/menu-items/${req.file.filename}`;
   if (!req.file) {
+    console.log("No image file was provided in the request.");
     return res.status(400).json({ error: "No image file provided." });
   }
+  const menuItemPath = `${req.protocol}://${req.get(
+    "host"
+  )}/menuItemPictures/uploads/menu-items/${req.file.filename}`;
+  console.log("Constructed menuItemPath:", menuItemPath);
   try {
     const item = await MenuItemModel.findByPk(id);
     if (!item) {
+      console.log(`Menu item with ID ${id} not found.`);
       return res.status(404).json({ error: "Menu item not found" });
     }
     item.image_path = menuItemPath;
@@ -153,13 +168,13 @@ exports.deleteMenuItem = async (req, res) => {
       .json({ error: "An error occurred while deleting the menu item." });
   }
 };
-
 exports.getMenu = async (req, res) => {
   let restaurant_id = req.authenticated.id;
 
   if (req.authenticated.role === "user" && req.params) {
     restaurant_id = req.params.restaurant_id;
   }
+
   try {
     const categories = await MenuCategoryModel.findAll({
       where: { restaurant_id },
@@ -170,15 +185,12 @@ exports.getMenu = async (req, res) => {
         },
       ],
     });
+
+    // Transform the menu data without adding `image_url`
     const menu = categories.map((category) => ({
       ...category.toJSON(),
       items: category.items.map((item) => ({
-        ...item.toJSON(),
-        image_url: item.image_path
-          ? `${req.protocol}://${req.get(
-              "host"
-            )}/menuItemPictures/${path.basename(item.image_path)}`
-          : null,
+        ...item.toJSON(), // Include all item details as is
       })),
     }));
 
@@ -188,5 +200,42 @@ exports.getMenu = async (req, res) => {
     res
       .status(500)
       .json({ error: "An error occurred while fetching the menu." });
+  }
+};
+exports.updateDiscountPrice = async (req, res) => {
+  try {
+    const { menu_item_id, discount, remaining_discount_time } = req.body;
+    if (!menu_item_id || !discount || !remaining_discount_time) {
+      return res
+        .status(400)
+        .json({ error: "Please provide all the required fields" });
+    }
+    const item = await MenuItemModel.findByPk(menu_item_id);
+    if (!item) {
+      return res.status(404).json({ error: "Menu item not found" });
+    }
+
+    const now = new Date();
+    const discountDate = new Date(remaining_discount_time);
+    if (
+      isNaN(discountDate) ||
+      discountDate <= now ||
+      discount < 0 ||
+      discount > 100
+    ) {
+      return res.status(400).json({
+        error:
+          "Please provide a valid future date for remaining_discount_time or invalid discount",
+      });
+    }
+    item.discount = discount;
+    item.remaining_discount_time = remaining_discount_time;
+    await item.save();
+    res.status(200).json({ message: "Discount updated successfully", item });
+  } catch (err) {
+    console.error("Error updating discount:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the discount." });
   }
 };
