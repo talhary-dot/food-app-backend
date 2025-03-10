@@ -9,7 +9,7 @@ const router = express.Router();
 router.post("/place", authenticate(["user"]), orderController.placeOrder);
 
 // Get all orders for a customer
-router.get("/get", orderController.getCustomerOrders);
+router.get("/get", authenticate(["user"]), orderController.getCustomerOrders);
 
 // Get order details
 router.get("/:id", orderController.getOrderDetails);

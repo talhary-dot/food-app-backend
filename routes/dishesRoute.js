@@ -9,7 +9,9 @@ router.use(authenticate(["restaurant", "user"]));
 router.post("/", dishController.createDish);
 
 // Update a dish
-router.put("/:id", dishController.updateDish);
+router.put("/:id", dishController.updateDish
+    
+);
 
 // Delete a dish
 router.delete("/:id", dishController.deleteDish);

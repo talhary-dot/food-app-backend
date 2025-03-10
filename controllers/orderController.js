@@ -5,8 +5,9 @@ const {
   UserModel,
 } = require("../models");
 const calculatePrice = require("../utils/calculateDiscount");
-require("dotenv").config();
 const stripe = require("../config/stripe");
+
+require("dotenv").config();
 
 exports.placeOrder = async (req, res) => {
   const { restaurant_id, items } = req.body; // items: [{ menu_item_id, quantity }]
