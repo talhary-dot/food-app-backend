@@ -16,6 +16,7 @@ router.post(
   uploadSingle.single("profile_picture"),
   restaurantController.signup
 );
+router.post("/resend-otp", restaurantController.resendOtp);
 router.post("/verify-otp", restaurantController.verifyOtp);
 router.post("/login", restaurantController.login);
 //Profile
