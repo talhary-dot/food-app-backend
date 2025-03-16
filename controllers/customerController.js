@@ -128,6 +128,59 @@ exports.login = async (req, res) => {
   }
 };
 
+// Resend OTP
+exports.resendOtp = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Check if the user exists
+    const user = await UserModel.findOne({ where: { email } });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ error: "Email not found. Please sign up first." });
+    }
+
+    // Generate a new OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Upsert the OTP record in the OptVerificationModel
+    await OptVerificationModel.upsert({
+      user_id: user.id,
+      otp,
+      expire_at: new Date(Date.now() + 10 * 60 * 1000), // Valid for 10 minutes
+    });
+
+    // Configure the email transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    // Send OTP email
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Resend OTP for Verification",
+      text: `Your new OTP is ${otp}. It is valid for 10 minutes.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res
+      .status(200)
+      .json({ message: "OTP resent successfully. Please check your email." });
+  } catch (err) {
+    console.error("Error while resending OTP:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing your request." });
+  }
+};
+
 exports.verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
 
