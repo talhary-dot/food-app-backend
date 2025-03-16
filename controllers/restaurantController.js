@@ -17,7 +17,6 @@ exports.signup = async (req, res) => {
     operating_hours,
     restaurant_type,
     menu_upload,
-
     payment_details,
   } = req.body;
 
@@ -28,9 +27,11 @@ exports.signup = async (req, res) => {
     if (existingRestaurant) {
       return res.status(400).json({ error: "Email is already registered" });
     }
+
     let profilePicturePath = null;
     if (req.file && req.file.filename) {
-      profilePicturePath = `/uploads/${req.file.filename}`;
+      const baseUrl = `${req.protocol}://${req.get("host")}`; // Dynamically get server URL
+      profilePicturePath = `${baseUrl}/uploads/${req.file.filename}`;
     }
 
     const restaurant = await RestaurantModel.create({
@@ -75,12 +76,14 @@ exports.signup = async (req, res) => {
     res.status(201).json({
       message:
         "Restaurant registered successfully. Please verify your email using the OTP sent.",
+      profile_picture: profilePicturePath, // Return full image URL
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "An error occurred during signup." });
   }
 };
+
 exports.updateRestaurantProfile = async (req, res) => {
   try {
     const restaurantId = req.params.id; // Get restaurant ID from URL parameter

@@ -3,15 +3,12 @@ const router = express.Router();
 const dishController = require("../controllers/dishesController");
 const authenticate = require("../middleware/authMiddleware");
 
-
-router.use(authenticate(["restaurant", "user"]));
+router.use(authenticate(["restaurant"]));
 // Create a new dish
 router.post("/", dishController.createDish);
 
 // Update a dish
-router.put("/:id", dishController.updateDish
-    
-);
+router.put("/:id", dishController.updateDish);
 
 // Delete a dish
 router.delete("/:id", dishController.deleteDish);
