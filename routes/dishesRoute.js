@@ -3,7 +3,7 @@ const router = express.Router();
 const dishController = require("../controllers/dishesController");
 const authenticate = require("../middleware/authMiddleware");
 
-router.use(authenticate(["restaurant"]));
+router.use(authenticate(["restaurant", "user"]));
 // Create a new dish
 router.post("/", dishController.createDish);
 
