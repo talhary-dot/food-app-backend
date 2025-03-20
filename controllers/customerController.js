@@ -227,6 +227,41 @@ exports.verifyOtp = async (req, res) => {
   }
 };
 
+
+exports.updateCustomer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, phone, address, password } = req.body;
+
+    // Find the user in the database
+    const user = await UserModel.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update user details
+    user.name = name || user.name;
+    user.phone = phone || user.phone;
+    user.address = address || user.address;
+    user.email = email || user.email;
+    user.password = password || user.password;
+
+    // Save the updated user data
+    await user.save();
+
+    user.password = undefined;
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user,
+    });
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    res.status(500).json({ error: "An error occurred while updating profile" });
+  }
+};
+
 exports.fetchCustomerDetails = async (req, res) => {
   try {
     const authenticated = req.authenticated;

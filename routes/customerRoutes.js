@@ -8,6 +8,7 @@ const router = express.Router();
 // Authentication Routes
 router.post("/signup", customerController.signup);
 router.post("/login", customerController.login);
+router.put("/update/:id", customerController.updateCustomer);
 router.post("/resend-otp", customerController.resendOtp);
 router.post("/verify-otp", customerController.verifyOtp);
 
